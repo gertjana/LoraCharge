@@ -4,10 +4,11 @@
 
 #define loraSerial Serial1
 
-const uint8_t devAddr[4] = { 0x02, 0x01, 0x59, 0x00 };
+const uint8_t devAddr[4]  = { 0x02, 0x01, 0x59, 0x00 };
 const uint8_t appSKey[16] = { 0x2B, 0x7E, 0x15, 0x16, 0x28, 0xAE, 0xD2, 0xA6,  0xAB, 0xF7, 0x15, 0x88,  0x09, 0xCF, 0x4F, 0x3C };
 const uint8_t nwkSKey[16] = { 0x2B, 0x7E, 0x15, 0x16, 0x28, 0xAE, 0xD2, 0xA6,  0xAB, 0xF7, 0x15, 0x88,  0x09, 0xCF, 0x4F, 0x3C };
 
+// GPIO Ports
 const int led = 12;
 const int startButton = 11;
 const int stopButton = 10;
@@ -17,7 +18,7 @@ long t = millis();
 boolean charging = false;
 
 String startMessage = "{'charge':'start'}";
-String stopMessage = "{'charge':'stop', 'duration':'%DUR%', 'volume':'???'}";
+String stopMessage = "{'charge':'stop', 'duration':%DUR%, 'volume':0}";
 
 void setup()
 {
@@ -59,19 +60,25 @@ void loop()
     
     if (startPressed && !charging) {
       charging=true;
-      digitalWrite(12,HIGH);
+      t = millis();
       sendMessage(startMessage);
       debugSerial.println("Starting Charging");
     }
 
     if (stopPressed && charging) {
       charging=false;
-      digitalWrite(12,LOW);
-      stopMessage.replace("%DUR%",String((millis()-t)/1000));
+      int duration = (millis()-t)/1000;
+      debugSerial.println("Charged for: " + String(duration) + " seconds");
+      stopMessage.replace("%DUR%",String(duration));
       sendMessage(stopMessage);
       debugSerial.println("Stopped Charging");
     }
-    
+
+    if (charging) {
+      digitalWrite(12,HIGH);      
+    } else {
+      digitalWrite(12,LOW);
+    }
     delay(100);
   }
 }
