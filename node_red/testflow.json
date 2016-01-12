@@ -1,0 +1,78 @@
+[
+    {
+        "broker": "croft.thethings.girovito.nl",
+        "clientid": "",
+        "id": "56576a8f.a9a894",
+        "port": "1883",
+        "type": "mqtt-broker"
+    },
+    {
+        "broker": "56576a8f.a9a894",
+        "id": "cf6e4e5c.3091b",
+        "name": "TTN 0x02015900 Packets",
+        "topic": "nodes/02015900/packets",
+        "type": "mqtt in",
+        "wires": [
+            [
+                "c32b95ef.3cd468",
+                "b8c7c36f.47384"
+            ]
+        ],
+        "x": 134,
+        "y": 57,
+        "z": "783bef02.87c41"
+    },
+    {
+        "active": true,
+        "complete": "true",
+        "console": "false",
+        "id": "1c7350db.e38caf",
+        "name": "",
+        "type": "debug",
+        "wires": [],
+        "x": 535,
+        "y": 213,
+        "z": "783bef02.87c41"
+    },
+    {
+        "id": "c32b95ef.3cd468",
+        "name": "",
+        "type": "json",
+        "wires": [
+            [
+                "a64d1ca3.59b2e"
+            ]
+        ],
+        "x": 254,
+        "y": 130,
+        "z": "783bef02.87c41"
+    },
+    {
+        "func": "var data = new Buffer(msg.payload.data, 'base64')\nvar time = msg.time;\nmsg = {};\nmsg.time = time;\nmsg.data = new Buffer(data).toString('hex');\nmsg.address = new Buffer([data[4],data[3],data[2],data[1]]).toString('hex');\nif (data[0] === 0) {\n    msg.charge = \"start\";\n} else {\n    msg.charge = \"stop\";\n    msg.duration = (data[6] << 8) + data[5];\n    msg.volume = (data[8] << 8) + data[7];\n}\nreturn msg;",
+        "id": "a64d1ca3.59b2e",
+        "name": "decode",
+        "noerr": 0,
+        "outputs": 1,
+        "type": "function",
+        "wires": [
+            [
+                "1c7350db.e38caf"
+            ]
+        ],
+        "x": 349,
+        "y": 213,
+        "z": "783bef02.87c41"
+    },
+    {
+        "active": false,
+        "complete": "false",
+        "console": "false",
+        "id": "b8c7c36f.47384",
+        "name": "",
+        "type": "debug",
+        "wires": [],
+        "x": 531,
+        "y": 56,
+        "z": "783bef02.87c41"
+    }
+]
