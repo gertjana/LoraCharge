@@ -1,5 +1,7 @@
 #include <Sodaq_RN2483.h>
 
+#define DEBUG
+
 #define debugSerial SerialUSB
 
 #define loraSerial Serial1
@@ -17,8 +19,11 @@ long t = millis();
 
 boolean charging = false;
 
-String startMessage = "{'charge':'start'}";
-String stopMessage = "{'charge':'stop', 'duration':%DUR%, 'volume':0}";
+const byte START = 0x00;
+const byte STOP  = 0x01;
+
+// get from rifd reader
+const uint8_t RFID[4] = {0xAE, 0x9C, 0x39, 0x12};
 
 void setup()
 {
@@ -61,16 +66,18 @@ void loop()
     if (startPressed && !charging) {
       charging=true;
       t = millis();
-      sendMessage(startMessage);
+      uint8_t startMsg[] = { START, RFID[3], RFID[2], RFID[1], RFID[0] };
+      sendMessage(startMsg, 5);
       debugSerial.println("Starting Charging");
     }
 
-    if (stopPressed && charging) {
+    if (stopPressed) {
       charging=false;
       int duration = (millis()-t)/1000;
-      debugSerial.println("Charged for: " + String(duration) + " seconds");
-      stopMessage.replace("%DUR%",String(duration));
-      sendMessage(stopMessage);
+      int volume = random(100);
+      debugSerial.println("Charged " + String(volume) + " kWh in: " + String(duration) + " seconds");
+      uint8_t stopMsg[] = { STOP, RFID[3], RFID[2], RFID[1], RFID[0], lowByte(duration), highByte(duration), lowByte(volume), highByte(volume) }; //last 2 bytes is volume
+      sendMessage(stopMsg, 9);
       debugSerial.println("Stopped Charging");
     }
 
@@ -92,11 +99,8 @@ void blinkLed(int times, int len) {
   }
 }
 
-void sendMessage(String data) {
-  byte buf[data.length()+1];
-  data.getBytes(buf, data.length()+1);
-
- switch (LoRaBee.send(1, buf, data.length())) {
+void sendMessage(uint8_t* data, int size) {
+ switch (LoRaBee.send(1, data, size)) {
   case NoError:
     debugSerial.println("Successful transmission.");
     break;
