@@ -1,6 +1,6 @@
-# clojure-rest
+# clojure[script] backend
 
-FIXME
+Backend that can receive/store sessions from the lora module
 
 ## Prerequisites
 
@@ -8,12 +8,14 @@ You will need [Leiningen][] 2.0.0 or above installed.
 
 [leiningen]: https://github.com/technomancy/leiningen
 
+
+## Building
+
+    lein cljsbuild once
+
 ## Running
 
-To start a web server for the application, run:
+To start the application, run:
 
-    lein ring server
+    lein up
 
-## License
-
-Copyright © 2016 FIXME
