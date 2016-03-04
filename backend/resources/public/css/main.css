@@ -1,0 +1,21 @@
+
+body {
+	padding: 10px;
+}
+
+table {
+	border: 1px solid #888;
+}
+
+td,th {
+	text-align: center;
+	padding-left: 5px;
+	padding-right: 5px;
+	border: 1px solid #ccc;
+}
+
+th {
+	background-color:#CCC;
+	 min-width:100px;
+
+}
