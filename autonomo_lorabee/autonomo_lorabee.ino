@@ -51,6 +51,8 @@ int stringToBytes(char *string, char *result) {
 void setup() {
   digitalWrite(BEE_VCC, HIGH); // turn on lora module
   pinMode(13, OUTPUT);
+
+  pinMode(1, INPUT);
   
   debugSerial.begin(57600);
   rfidSerial.begin(9600); 
@@ -67,6 +69,8 @@ void setup() {
 
 void loop() {
   while ((!SerialUSB) && (millis() < 5000)); // wait for usb serial monitor for 5 seconds
+
+  boolean value = digitalRead(1);
 
   debugSerial.println("Sleeping for 5 seconds");
   for (uint8_t i = 5; i > 0; i--) {
