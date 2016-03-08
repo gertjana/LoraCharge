@@ -52,9 +52,16 @@
         (empty? results) nil
         :else (first results)))))
 
+(defn get-open-session [rfid device]
+  (sql/with-connection (db-connection)
+    (sql/with-query-results results
+      ["select * from sessions where rfid =? and device=? and stop is null" rfid device]
+      (cond
+        (empty? results) nil
+        :else (first results)
+      ))))
+
 (defn create-new-session [ses]
-  ; (println ses)
-  ; (println (type ses)))
   (let [id (uuid)]
     (sql/with-connection (db-connection)
       (let [session (assoc ses "id" id)]
