@@ -27,9 +27,7 @@ app.get('/chargepoint/:s/poll', function (req, res) {
 });
 
 // receive messages from cp and send over serial
-app.post('/chargepoint/:s/:c/:t', function(req,res) {
-  var serial = req.params.s;
-  var connector = req.params.c;
+app.post('/chargepoint/*/*/:t', function(req,res) {
   var typeByte = Buffer.from([req.params.t == 'auth' ? 0x00 : 0x01]);
   var payload = Buffer.concat([typeByte,req.body],req.body.length+1);
 
