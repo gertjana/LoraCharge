@@ -1,0 +1,21 @@
+{
+  "name": "lolora",
+  "version": "0.0.1",
+  "description": "Lolo2 chargepoint to Lora",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gertjana/lolora.git"
+  },
+  "author": "gertjana",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "polling": "^0.1.3",
+    "serialport": "^4.0.3"
+  }
+}
