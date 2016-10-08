@@ -3,12 +3,9 @@
   "version": "0.0.1",
   "description": "Lolo2 chargepoint to Lora",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/gertjana/lolora.git"
+    "url": "https://github.com/gertjana/LoraCharge.git"
   },
   "author": "gertjana",
   "license": "MIT",
@@ -19,7 +16,7 @@
     "serialport": "^4.0.3"
   },
   "config": {
-    "serialPort": "/dev/tty/usbSerial1",
-    "baudrate": 115200
+    "serialPort": "/dev/cu.SLAB_USBtoUART",
+    "baudRate": 115200
   }
 }

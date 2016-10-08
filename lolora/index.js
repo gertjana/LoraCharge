@@ -2,39 +2,35 @@ var Express = require('express');
 var BodyParser = require('body-parser');
 var Polling = require('polling');
 var SerialPort = require('serialport');
-var Config = require('package.json').config;
+var Config = require('./package.json').config;
 
 var chargepointSerial;
 
-var port = new SerialPort(Config.serialPort, {baudRate:config.baudRate});
+var app = Express();
+app.use(BodyParser.raw({ type: 'application/x-protobuf' }))
 
+var port = new SerialPort(Config.serialPort, {baudRate:Config.baudRate});
 port.on('open', function() { console.log("Serial port opened"); });
 port.on('close', function() { console.log("Serial port closed"); });
 
+//send returned data to the connected longpolling cp
 port.on('data', function(data) {
     if (chargepointSerial) {
-      polling.emit(chargepointSerial, data);
+      Polling.emit(chargepointSerial, data);
     }
-})
-
-var app = express();
-
-app.use(bodyParser.raw({ type: 'application/x-protobuf' }))
-
-// open long polling connection to send commands to cp
-app.get('/chargepoint/:serial/poll', function (req, res) {
-  var chargepointSerial = req.params.serial;
-  polling.on(req.params.serial, res);
 });
 
-// receive messages from cp
+// open long polling connection to send commands to cp
+app.get('/chargepoint/:s/poll', function (req, res) {
+  chargepointSerial = req.params.s;
+  Polling.on(req.params.s, res);
+});
+
+// receive messages from cp and send over serial
 app.post('/chargepoint/:s/:c/:t', function(req,res) {
-	var serial = req.params.s;
+  var serial = req.params.s;
   var connector = req.params.c;
-  var msgType = req.params.t == 'auth' ? 0x00 : 0x01;
-  console.log(msgType);
-  var typeByte = Buffer.from([msgType]);
-  console.log(req.body);
+  var typeByte = Buffer.from([req.params.t == 'auth' ? 0x00 : 0x01]);
   var payload = Buffer.concat([typeByte,req.body],req.body.length+1);
 
   if (port.isOpen()) {
