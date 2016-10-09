@@ -16,7 +16,7 @@
     "serialport": "^4.0.3"
   },
   "config": {
-    "serialPort": "/dev/cu.SLAB_USBtoUART",
+    "serialPort": "/dev/tty0",
     "baudRate": 115200
   }
 }

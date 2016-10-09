@@ -10,7 +10,7 @@ var app = Express();
 app.use(BodyParser.raw({ type: 'application/x-protobuf' }))
 
 var port = new SerialPort(Config.serialPort, {baudRate:Config.baudRate});
-port.on('open', function() { console.log("Serial port opened"); });
+port.on('open', function() { console.log("Proxy-ing to Serial port %s", Config.serialPort); });
 port.on('close', function() { console.log("Serial port closed"); });
 
 //send returned data to the connected longpolling cp
@@ -40,6 +40,6 @@ app.post('/chargepoint/*/*/:t', function(req,res) {
 });
 
 app.listen(3000, function () {
-  console.log('Lolora listening on port 3000!');
+  console.log('Lolora Chargepoint proxy listening on port 3000!');
 });
 
